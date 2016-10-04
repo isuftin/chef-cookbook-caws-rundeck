@@ -1,0 +1,444 @@
+---
+driver:
+  name: vagrant
+  network:
+    - ['forwarded_port', {guest: 4440, host: 4440, auto_correct: true}] # rundeck server port
+    - ['forwarded_port', {guest: 4443, host: 4443, auto_correct: true}] # rundeck server port
+    - ['forwarded_port', {guest: 9980, host: 9980, auto_correct: true}] # chef-rundeck port
+    - ['forwarded_port', {guest: 4440, host: 80, auto_correct: true}] # rundeck server port
+    - ['forwarded_port', {guest: 4443, host: 443, auto_correct: true}] # rundeck server port
+    - ['forwarded_port', {guest: 9980, host: 9980, auto_correct: true}] # chef-rundeck port
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: centos-6.7-vbox
+    driver:
+      box: bento/centos-6.7
+      box_url: bento/centos-6.7
+      provider: virtualbox
+  - name: centos-6.7-vmware
+    driver:
+      box: bento/centos-6.7
+      box_url: bento/centos-6.7
+      provider: vmware_fusion
+
+suites:
+  - name: default
+    run_list:
+      - recipe[stig::default]
+      - recipe[iptables::default]
+      - recipe[caws-rundeck::default]
+      - recipe[caws-rundeck::tune_rundeck]
+    data_bags_path: './test/integration/default/data_bags/'
+    encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
+    attributes: {
+      "java" : {
+          "install_flavor" : "oracle",
+          "jdk_version" : "8",
+          "oracle" : {
+               "accept_oracle_download_terms" : true
+          }
+      },
+      "stig" : {
+        "selinux": {
+          "enabled": false,
+          "status": "permissive"
+        },
+        "limits": [
+          {
+            "*": {
+              "hard": "core 65535"
+            }
+          },
+          {
+            "rundeck": {
+              "hard": "nofile 65535",
+              "soft": "nofile 65535"
+            }
+          }
+      ]
+      },
+      "caws-rundeck" : {
+        "http_protocol" : "http",
+        "hostname" : "127.0.0.1",
+        "port" : "4440"
+      },
+      "rundeck_server" : {
+        "plugins" : {
+          "winrm" : {
+            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.1/rundeck-winrm-plugin-1.3.1.jar"
+          },
+          "jenkins" : {
+            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.5.1/rundeck-3.5.1.hpi"
+          },
+          "ec2nodes" : {
+            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.1/rundeck-ec2-nodes-plugin-1.5.1.jar"
+          },
+          "s3log" : {
+            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.0/rundeck-s3-log-plugin-1.0.0.jar"
+          },
+          "log4jstreaminglogger" : {
+            "url" : "https://github.com/rundeck-plugins/log4j-streaming-logwriter/releases/download/v1.0.0/Log4jStreamingLogWriterPlugin.groovy"
+          }
+        },
+        "packages" : {
+          "rundeck" : "2.6.7-1.19.GA",
+          "rundeck-config" : "2.6.7-1.19.GA"
+        },
+        "rundeck-config.properties": {
+          "rundeck.projectsStorageType": "filesystem",
+          # Key Storage
+          "rundeck.storage.provider.1.type": "file",
+          "rundeck.storage.provider.1.path": "/keys",
+          "rundeck.storage.converter.1.type": "jasypt-encryption",
+          "rundeck.storage.converter.1.path" :"/keys",
+          "rundeck.storage.converter.1.config.encryptorType":"basic",
+
+          # Project Definition Storage
+          "rundeck.config.storage.provider.1.type" : "file",
+          "rundeck.config.storage.provider.1.path" : "/projects",
+          "rundeck.config.storage.converter.1.type": "jasypt-encryption",
+          "rundeck.config.storage.converter.1.path" :"/projects",
+          "rundeck.config.storage.converter.1.config.encryptorType":"basic"
+        },
+        "rundeck-config.framework" : {
+         "framework.server.username" : "admin",
+         "framework.server.name" : "caws-rundeck",
+         "framework.server.hostname" : "127.0.0.1",
+         "framework.server.url" : "http://default-centos-67-vbox:4440"
+        }
+      }
+    }
+
+  - name: default-mysql
+    run_list:
+      - recipe[stig::default]
+      - recipe[iptables::default]
+      - recipe[caws-rundeck::default]
+      - recipe[caws-rundeck::tune_rundeck]
+    data_bags_path: './test/integration/default/data_bags/'
+    encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
+    attributes: {
+      "java" : {
+          "install_flavor" : "oracle",
+          "jdk_version" : "8",
+          "oracle" : {
+               "accept_oracle_download_terms" : true
+          }
+      },
+      "stig" : {
+        "selinux": {
+          "enabled": false,
+          "status": "permissive"
+        },
+        "limits": [
+          {
+            "*": {
+              "hard": "core 65535"
+            }
+          },
+          {
+            "rundeck": {
+              "hard": "nofile 65535",
+              "soft": "nofile 65535"
+            }
+          }
+      ]
+      },
+      "caws-rundeck" : {
+        "http_protocol" : "http",
+        "hostname" : "127.0.0.1",
+        "port" : "4440"
+      },
+      "rundeck_server" : {
+        "plugins" : {
+          "winrm" : {
+            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.1/rundeck-winrm-plugin-1.3.1.jar"
+          },
+          "jenkins" : {
+            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.5.1/rundeck-3.5.1.hpi"
+          },
+          "ec2nodes" : {
+            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.1/rundeck-ec2-nodes-plugin-1.5.1.jar"
+          },
+          "s3log" : {
+            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.0/rundeck-s3-log-plugin-1.0.0.jar"
+          },
+          "log4jstreaminglogger" : {
+            "url" : "https://github.com/rundeck-plugins/log4j-streaming-logwriter/releases/download/v1.0.0/Log4jStreamingLogWriterPlugin.groovy"
+          }
+        },
+        "packages" : {
+          "rundeck" : "2.6.7-1.19.GA",
+          "rundeck-config" : "2.6.7-1.19.GA"
+        },
+        "rundeck-config.properties": {
+          # docker run -p "3306:3306" -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=rundeck -e MYSQL_USER=rundeck -e MYSQL_PASSWORD=mysqlpass mysql:latest
+          "dataSource.url" : "jdbc:mysql://192.168.99.100/rundeck?autoReconnect=true",
+          "dataSource.username" : "rundeck",
+          "rundeck.projectsStorageType": "db",
+          # Key Storage
+          "rundeck.storage.provider.1.type": "db",
+          "rundeck.storage.provider.1.path": "/keys",
+          "rundeck.storage.converter.1.type": "jasypt-encryption",
+          "rundeck.storage.converter.1.path" :"/keys",
+          "rundeck.storage.converter.1.config.encryptorType":"basic",
+
+          # Project Definition Storage
+          "rundeck.config.storage.provider.1.type" : "db",
+          "rundeck.config.storage.provider.1.path" : "/projects",
+          "rundeck.config.storage.converter.1.type": "jasypt-encryption",
+          "rundeck.config.storage.converter.1.path" :"/projects",
+          "rundeck.config.storage.converter.1.config.encryptorType":"basic"
+        },
+        "rundeck-config.framework" : {
+         "framework.server.username" : "admin",
+         "framework.server.name" : "caws-rundeck",
+         "framework.server.hostname" : "127.0.0.1",
+         "framework.server.url" : "http://default-centos-67-vbox:4440"
+        }
+      }
+    }
+
+  - name: server-ldap
+    run_list:
+      - recipe[stig::default]
+      - recipe[iptables::default]
+      - recipe[caws-rundeck::default]
+      - recipe[caws-rundeck::setup_jaas]
+    data_bags_path: './test/integration/default/data_bags/'
+    encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
+    attributes: {
+      "java" : {
+          "install_flavor" : "oracle",
+          "jdk_version" : "8",
+          "oracle" : {
+               "accept_oracle_download_terms" : true
+          }
+      },
+      "stig" : {
+        "selinux": {
+          "enabled": false,
+          "status": "permissive"
+        },
+        "limits": [
+          {
+            "*": {
+              "hard": "core 65535"
+            }
+          },
+          {
+            "rundeck": {
+              "hard": "nofile 65535",
+              "soft": "nofile 65535"
+            }
+          }
+      ]
+      },
+      "caws-rundeck" : {
+        "http_protocol" : "http",
+        "hostname" : "127.0.0.1",
+        "port" : "4440",
+        "jaas" : [
+          {
+            "module":  "org.eclipse.jetty.plus.jaas.spi.PropertyFileLoginModule",
+            "flag":    "required",
+            "options": {
+              "debug": "true",
+              "file":  "/etc/rundeck/realm.properties"
+            }
+          },
+          {
+            "module" : "com.dtolabs.rundeck.jetty.jaas.JettyCachingLdapLoginModule",
+            "name" : "testad",
+            "flag":    "sufficient",
+            "options" : {
+              "debug" : "true",
+              "contextFactory" : "com.sun.jndi.ldap.LdapCtxFactory",
+              "providerUrl" : "ldap://1.0.1.0",
+              "bindDn" : "CN=LDAP Client User,OU=Test Accounts,OU=Rundeck,DC=test",
+              "bindPassword" : "",
+              "authenticationMethod" : "simple",
+              "forceBindingLogin":"true",
+              "userBaseDn":"DC=test",
+              "userRdnAttribute":"sAMAccountName",
+              "userIdAttribute":"sAMAccountName",
+              "userPasswordAttribute":"unicodePwd",
+              "userObjectClass":"user",
+              "roleBaseDn":"DC=test",
+              "roleNameAttribute":"cn",
+              "roleMemberAttribute":"member",
+              "roleObjectClass":"group",
+              "cacheDurationMillis":"300000",
+              "reportStatistics":"true"
+            }
+          }
+        ]
+      },
+      "rundeck_server" : {
+        "jvm" : {
+          "Djava.security.auth.login.config" : "/etc/rundeck/jaas-module.conf",
+          "Dloginmodule.name" : "RundeckLoginModule"
+        },
+        "plugins" : {
+          "winrm" : {
+            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.1/rundeck-winrm-plugin-1.3.1.jar"
+          },
+          "jenkins" : {
+            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.5.1/rundeck-3.5.1.hpi"
+          },
+          "ec2nodes" : {
+            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.1/rundeck-ec2-nodes-plugin-1.5.1.jar"
+          },
+          "s3log" : {
+            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.0/rundeck-s3-log-plugin-1.0.0.jar"
+          },
+          "log4jstreaminglogger" : {
+            "url" : "https://github.com/rundeck-plugins/log4j-streaming-logwriter/releases/download/v1.0.0/Log4jStreamingLogWriterPlugin.groovy"
+          }
+        },
+        "packages" : {
+          "rundeck" : "2.6.7-1.19.GA",
+          "rundeck-config" : "2.6.7-1.19.GA"
+        },
+        "rundeck-config.framework" : {
+         "framework.server.name" : "127.0.0.1",
+         "framework.server.hostname" : "127.0.0.1",
+         "framework.server.url" : "http://127.0.0.1:4440"
+        }
+      }
+    }
+
+  - name: ssl-server-create-cert
+    run_list:
+      - recipe[stig::default]
+      - recipe[iptables::default]
+      - recipe[caws-rundeck::default]
+      - recipe[caws-rundeck::setup_ssl]
+    data_bags_path: './test/integration/default/data_bags/'
+    encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
+    attributes: {
+      "java" : {
+          "install_flavor" : "oracle",
+          "jdk_version" : "8",
+          "oracle" : {
+               "accept_oracle_download_terms" : true
+          }
+      },
+      "stig" : {
+        "selinux": {
+          "enabled": false,
+          "status": "permissive"
+        },
+        "limits": [
+          {
+            "*": {
+              "hard": "core 65535"
+            }
+          },
+          {
+            "rundeck": {
+              "hard": "nofile 65535",
+              "soft": "nofile 65535"
+            }
+          }
+      ]
+      },
+      "caws-rundeck" : {
+        "host" : "127.0.0.1",
+        "ssl_config" : {
+          "org_unit" : "test",
+          "org" : "test",
+          "locality" : "Reston",
+          "state" : "VA",
+          "country" : "US"
+        }
+      },
+      "rundeck_server" : {
+        "packages" : {
+          "rundeck" : "2.6.7-1.19.GA",
+          "rundeck-config" : "2.6.7-1.19.GA"
+        },
+        "jvm" : {
+          "Drundeck.ssl.config" : "/etc/rundeck/ssl/ssl.properties"
+        },
+        "rundeck-config.framework" : {
+         "framework.server.name" : "127.0.0.1",
+         "framework.server.hostname" : "127.0.0.1",
+         "framework.server.url" : "https://127.0.0.1:4443"
+        }
+      }
+    }
+
+  - name: ssl-server-provide-cert
+    run_list:
+      - recipe[iptables::default]
+      - recipe[stig::default]
+      - recipe[caws-rundeck::default]
+      - recipe[caws-rundeck::setup_ssl]
+    data_path: './test/files/'
+    data_bags_path: './test/integration/default/data_bags/'
+    encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
+    attributes: {
+      "java" : {
+          "install_flavor" : "oracle",
+          "jdk_version" : "8",
+          "oracle" : {
+               "accept_oracle_download_terms" : true
+          }
+      },
+      "stig" : {
+        "selinux": {
+          "enabled": false,
+          "status": "permissive"
+        },
+        "limits": [
+          {
+            "*": {
+              "hard": "core 65535"
+            }
+          },
+          {
+            "rundeck": {
+              "hard": "nofile 65535",
+              "soft": "nofile 65535"
+            }
+          }
+      ]
+      },
+      "caws-rundeck" : {
+        "http_protocol" : "https",
+        "hostname" : "127.0.0.1",
+        "port" : "443",
+        "ssl_config" : {
+          "ssl_cert_file" : "/tmp/kitchen/data/example.com.cert",
+          "ssl_key_file" : "/tmp/kitchen/data/example.com.key"
+        }
+      },
+      "rundeck_server" : {
+        "packages" : {
+          "rundeck" : "2.6.7-1.19.GA",
+          "rundeck-config" : "2.6.7-1.19.GA"
+        },
+        "jvm" : {
+          "Drundeck.ssl.config" : "/etc/rundeck/ssl/ssl.properties",
+          "Drundeck.jetty.connector.forwarded" : "true",
+          "Dorg.eclipse.jetty.util.ssl.LEVEL" : "DEBUG",
+          "Djavax.net.debug" : "ssl:handshake",
+          "Djavax.net.ssl.trustStore" : "/etc/rundeck/ssl/truststore",
+          "Djavax.net.ssl.trustStoreType" : "jks"
+        },
+        "rundeck-config.properties" : {
+          "test" : "pass"
+        },
+        "rundeck-config.framework" : {
+         "framework.server.name" : "127.0.0.1",
+         "framework.server.hostname" : "127.0.0.1",
+         "framework.server.url" : "https://127.0.0.1:443",
+         "framework.rundeck.url" : "https://127.0.0.1:443",
+         "framework.server.port" : "4443"
+        }
+      }
+    }

@@ -1,0 +1,24 @@
+{
+  "id": "rundeck_users",
+  "admin": {
+    "encrypted_data": "PCPjwnI53CaIQ4scQs8MlA7MkK4973fqpNDBDxOmRFaMxtDlBqAKxSwn3fXO\nRFDi9ZMmQWNZ/n0BYM5oCUssK2LFlAzLgTOH5ZA8ooVdJ/lh7HPmH8gD6hRX\n9pya1tk1\n",
+    "hmac": "QeN0K5omhwjRlijZllXtvKC/ZFkFAoqLRkKHZ4ttgM0=\n",
+    "iv": "2RrHsMpgjZ6bhcefE2LxRg==\n",
+    "version": 2,
+    "cipher": "aes-256-cbc"
+  },
+  "user": {
+    "encrypted_data": "zglZVQCFBrcJjlVq6wCJq5Gh5Tjj2SHLMwX5rX2fgXmOdtTPRBbkuCYhLU9m\n1jT9uZNII9OUKtbflCt+ATw2vQ==\n",
+    "hmac": "k7b4WutOE9CoHBX0U7sv5xU5bbTV5CTMZdnpdPqZ/Ps=\n",
+    "iv": "mJhmAQlJscqowIwlLfk/zg==\n",
+    "version": 2,
+    "cipher": "aes-256-cbc"
+  },
+  "jsmith": {
+    "encrypted_data": "yEn2O1no2VUlDMugi5inOmR1zivIwqgPd7h0OxbKBYZOUunfIyU7QVki4Yue\nEbCLBweFv9qul/M1HTZfdzbTYLHV8xKKEx7+yRvBrT91zKY=\n",
+    "hmac": "J/cOUsA6itCeEx/T5V1GHzsWZu+Yx9dENtjNdV6DXas=\n",
+    "iv": "yt5IRpSPuMiEQekC56P+4g==\n",
+    "version": 2,
+    "cipher": "aes-256-cbc"
+  }
+}

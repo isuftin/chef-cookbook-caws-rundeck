@@ -1,0 +1,6 @@
+{
+	"id" : "rundeck_users",
+	"admin" : "MD5:21232f297a57a5a743894a0e4a801fc3,user,admin,architect,deploy,build",
+	"user" : "MD5:ee11cbb19052e40b07aac0ca060c23ee,user",
+	"jsmith" : "MD5:a029d0df84eb5549c641e04a9ef389e5,user,admin"
+}
