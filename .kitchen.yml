@@ -31,6 +31,8 @@ suites:
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::tune_rundeck]
+      - recipe[caws-rundeck::python_install]
+      - recipe[caws-rundeck::iptables]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -68,16 +70,16 @@ suites:
       "rundeck_server" : {
         "plugins" : {
           "winrm" : {
-            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.1/rundeck-winrm-plugin-1.3.1.jar"
+            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.3/rundeck-winrm-plugin-1.3.3.jar"
           },
           "jenkins" : {
-            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.5.1/rundeck-3.5.1.hpi"
+            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.6.1/rundeck-3.6.1.hpi"
           },
           "ec2nodes" : {
-            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.1/rundeck-ec2-nodes-plugin-1.5.1.jar"
+            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.4/rundeck-ec2-nodes-plugin-1.5.4.jar"
           },
           "s3log" : {
-            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.0/rundeck-s3-log-plugin-1.0.0.jar"
+            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.3/rundeck-s3-log-plugin-1.0.3.jar"
           },
           "log4jstreaminglogger" : {
             "url" : "https://github.com/rundeck-plugins/log4j-streaming-logwriter/releases/download/v1.0.0/Log4jStreamingLogWriterPlugin.groovy"
@@ -118,6 +120,8 @@ suites:
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::tune_rundeck]
+      - recipe[caws-rundeck::python_install]
+      - recipe[caws-rundeck::iptables]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -155,16 +159,16 @@ suites:
       "rundeck_server" : {
         "plugins" : {
           "winrm" : {
-            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.1/rundeck-winrm-plugin-1.3.1.jar"
+            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.3/rundeck-winrm-plugin-1.3.3.jar"
           },
           "jenkins" : {
-            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.5.1/rundeck-3.5.1.hpi"
+            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.6.1/rundeck-3.6.1.hpi"
           },
           "ec2nodes" : {
-            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.1/rundeck-ec2-nodes-plugin-1.5.1.jar"
+            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.4/rundeck-ec2-nodes-plugin-1.5.4.jar"
           },
           "s3log" : {
-            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.0/rundeck-s3-log-plugin-1.0.0.jar"
+            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.3/rundeck-s3-log-plugin-1.0.3.jar"
           },
           "log4jstreaminglogger" : {
             "url" : "https://github.com/rundeck-plugins/log4j-streaming-logwriter/releases/download/v1.0.0/Log4jStreamingLogWriterPlugin.groovy"
@@ -208,6 +212,8 @@ suites:
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_jaas]
+      - recipe[caws-rundeck::python_install]
+      - recipe[caws-rundeck::iptables]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -284,16 +290,16 @@ suites:
         },
         "plugins" : {
           "winrm" : {
-            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.1/rundeck-winrm-plugin-1.3.1.jar"
+            "url" : "https://github.com/rundeck-plugins/rundeck-winrm-plugin/releases/download/v1.3.3/rundeck-winrm-plugin-1.3.3.jar"
           },
           "jenkins" : {
-            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.5.1/rundeck-3.5.1.hpi"
+            "url" :  "http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/rundeck/3.6.1/rundeck-3.6.1.hpi"
           },
           "ec2nodes" : {
-            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.1/rundeck-ec2-nodes-plugin-1.5.1.jar"
+            "url" :  "https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.4/rundeck-ec2-nodes-plugin-1.5.4.jar"
           },
           "s3log" : {
-            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.0/rundeck-s3-log-plugin-1.0.0.jar"
+            "url" : "https://github.com/rundeck-plugins/rundeck-s3-log-plugin/releases/download/v1.0.3/rundeck-s3-log-plugin-1.0.3.jar"
           },
           "log4jstreaminglogger" : {
             "url" : "https://github.com/rundeck-plugins/log4j-streaming-logwriter/releases/download/v1.0.0/Log4jStreamingLogWriterPlugin.groovy"
@@ -317,6 +323,8 @@ suites:
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_ssl]
+      - recipe[caws-rundeck::python_install]
+      - recipe[caws-rundeck::iptables]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -378,6 +386,8 @@ suites:
       - recipe[stig::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_ssl]
+      - recipe[caws-rundeck::python_install]
+      - recipe[caws-rundeck::iptables]
     data_path: './test/files/'
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'

@@ -98,11 +98,3 @@ end
 if ! users.nil?
   node.override['rundeck_server']['realm.properties'] = {}
 end
-
-iptables_rule 'iptables_http' do
-  action :enable
-end
-
-iptables_rule 'iptables_https' do
-  action :enable
-end
