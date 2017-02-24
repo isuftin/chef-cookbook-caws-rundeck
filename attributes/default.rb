@@ -5,14 +5,20 @@ default['caws-rundeck']['http_protocol'] = ""
 default['caws-rundeck']['hostname'] = ""
 default['caws-rundeck']['port'] = ""
 
+# IPTables rules
+default['caws-rundeck']['iptables']['rules']['http'] = '-A FWR -p tcp -m tcp --dport 4440 -j ACCEPT'
+default['caws-rundeck']['iptables']['rules']['https'] = '-A FWR -p tcp -m tcp --dport 4443 -j ACCEPT'
+
+
+
 # Tuning rundeck. See http://rundeck.org/docs/administration/tuning-rundeck.html
 default['caws-rundeck']['tuning']['open-file-limit'] = 65535
 
 # Which version of JQ to install
 default['caws-rundeck']['installs']['jq']['version'] = "1.5"
 
-# The following configuration is used when you include the caws-rundeck::setup_ssl recipe in your 
-# runlist 
+# The following configuration is used when you include the caws-rundeck::setup_ssl recipe in your
+# runlist
 
 # The location pointing to where the SSL cert and key files are on the server.
 # Example: /root/ssl.crt and /root/ssl.key
@@ -50,14 +56,14 @@ default['caws-rundeck']['data_bag_config']['ssl_password_attribute'] = "ssl_pass
 # is used along with the `rundeck_passwords` encrypted data bag `jaas_passwords`
 # object.
 #
-# For more info on object structure: 
-# - https://github.com/criteo-cookbooks/rundeck-server/blob/1.1.2/attributes/default.rb#L99 
+# For more info on object structure:
+# - https://github.com/criteo-cookbooks/rundeck-server/blob/1.1.2/attributes/default.rb#L99
 # - https://github.com/criteo-cookbooks/rundeck-server/blob/1.1.2/README.md
 #
 # For example, in the following object, the `PropertyFileLoginModule` does not need
 # a `name` attribute because it holds no secrets. However, the `JettyCachingLdapLoginModule`
 # does. :
-# 
+#
 # "caws-rundeck" : {
 # "jaas" : [
 # 	  {
@@ -100,12 +106,12 @@ default['caws-rundeck']['data_bag_config']['ssl_password_attribute'] = "ssl_pass
 # {
 # 	"id" : "rundeck_passwords",
 # 	"jaas_passwords" : {
-# 		"aws" : { "bindPassword" : "Secret Here." } 
+# 		"aws" : { "bindPassword" : "Secret Here." }
 # 	}
 # }
 #
 # Note how the key in `jaas_passwords` matches the `name` attribute in the `jaas` object.
-# Also notice that the keys in the hash in the `aws` object are keyed off the `options` object 
+# Also notice that the keys in the hash in the `aws` object are keyed off the `options` object
 # in the configuration. The values will be replaced when writing out the configuration file.
 default['caws-rundeck']['jaas'] = [
 	{
