@@ -4,36 +4,32 @@
 # Description:: Set up rundeck ssl
 
 # Get passwords (if any) from the rundeck data bag
-databag_name = node['caws-rundeck']['data_bag_config']['ssl_bag_name']
-databag_item = node['caws-rundeck']['data_bag_config']['ssl_passwords_bag_item']
-ssl_password_attribute = node['caws-rundeck']['data_bag_config']['ssl_password_attribute']
-ssl_key_password_attribute = node['caws-rundeck']['data_bag_config']['ssl_key_password_attribute']
+rd_node = node['caws-rundeck']
+db_config = rd_node['data_bag_config']
+databag_name = db_config['ssl_bag_name']
+databag_item = db_config['ssl_passwords_bag_item']
+ssl_password_attribute = db_config['ssl_password_attribute']
+ssl_key_password_attribute = db_config['ssl_key_password_attribute']
 
 passwords = data_bag_item(databag_name, databag_item)
 ssl_password = passwords[ssl_password_attribute]
 ssl_src_key_password = passwords[ssl_key_password_attribute]
 
-# Pull out the config object
-ssl_config = node['caws-rundeck']['ssl_config']
-
 # Get the remote cert file location if one is defined
+ssl_config = rd_node['ssl_config']
 remote_cert_file = ssl_config['ssl_cert_file']
 remote_key_file = ssl_config['ssl_key_file']
 
-log "SSL Source data bag: #{databag_name}/#{databag_item}" do
-  level :debug
-end
-log "SSL password attribute: #{ssl_password_attribute}" do
-  level :debug
-end
-log "SSL key password attribute: #{ssl_key_password_attribute}" do
-  level :debug
-end
-log "SSL cert file location: #{remote_cert_file}" do
-  level :debug
-end
-log "SSL key file location: #{remote_key_file}" do
-  level :debug
+[
+  "SSL Source data bag: #{databag_name}/#{databag_item}",
+  "SSL password attribute: #{ssl_password_attribute}",
+  "SSL key password attribute: #{ssl_key_password_attribute}",
+  "SSL cert file location: #{remote_cert_file}",
+  "SSL key file location: #{remote_key_file}"
+].each do |l|
+  log l do
+    level :debug
+  end
 end
 
 # Set up some local string constants
@@ -46,22 +42,23 @@ truststore_location = "#{ssl_config_location}/truststore"
 
 # Default the host to be the machine's hostname or take it from the attributes, if available
 host = node['fqdn']
-if ! node['caws-rundeck']['hostname'].nil? && ! node['caws-rundeck']['hostname'].empty?
-  host = node['caws-rundeck']['hostname']
+if !rd_node['hostname'].nil? && !rd_node['hostname'].empty?
+  host = rd_node['hostname']
 end
-rundeck = "rundeck"
+rundeck = 'rundeck'
 
-if ! remote_cert_file.nil? && ! remote_cert_file.empty?
+if !remote_cert_file.nil? && !remote_cert_file.empty?
   # A certificate file was provided. Import that into the keystore and use it. Only do so if it
   # differs from what is already available
   remote_file local_cert_file do
     source "file://#{remote_cert_file}"
+    action :create
     notifies :create_if_missing, "remote_file[#{local_key_file}]", :immediately
-    notifies :delete, "file[delete_previous_cert]", :immediately
-    notifies :delete, "file[delete_previous_truststore]", :immediately
-    notifies :run, "execute[convert_cert]", :immediately
-    notifies :run, "execute[import_cert]", :immediately
-    notifies :delete, "file[delete_local_keyfile]", :immediately
+    notifies :delete, 'file[delete_previous_cert]', :immediately
+    notifies :delete, 'file[delete_previous_truststore]', :immediately
+    notifies :run, 'execute[convert_cert]', :immediately
+    notifies :run, 'execute[import_cert]', :immediately
+    notifies :delete, 'file[delete_local_keyfile]', :immediately
     notifies :restart, 'service[rundeckd]', :delayed
     sensitive true
   end
@@ -73,38 +70,38 @@ if ! remote_cert_file.nil? && ! remote_cert_file.empty?
   end
 
   # First, delete the previous certificate or the keytool command doesn't work properly
-  file "delete_previous_cert" do
+  file 'delete_previous_cert' do
     path keystore_location
     action :nothing
   end
 
-  file "delete_previous_truststore" do
+  file 'delete_previous_truststore' do
     path truststore_location
     action :nothing
   end
 
   # Construct pkcs12 command with optional source key password if provided need
   pkcs12_command = "/usr/bin/openssl pkcs12 -export -name #{rundeck} -in #{local_cert_file} -inkey #{local_key_file} -out #{local_pk12} -password pass:#{ssl_password}"
-  if ! ssl_src_key_password.nil? && ! ssl_src_key_password.empty?
+  if !ssl_src_key_password.nil? && !ssl_src_key_password.empty?
     pkcs12_command << " -passin pass:#{ssl_src_key_password}"
   end
 
   # Convert the certificate
-  execute "convert_cert" do
+  execute 'convert_cert' do
     command pkcs12_command
     sensitive true
     action :nothing
   end
 
   # Import the certificate
-  execute "import_cert" do
+  execute 'import_cert' do
     command "/usr/bin/keytool -importkeystore -destkeystore #{keystore_location} -srckeystore #{local_pk12} -srcstoretype pkcs12 -alias rundeck -srcstorepass #{ssl_password} -deststorepass #{ssl_password} -noprompt"
     sensitive true
     action :nothing
   end
 
   # Delete sensitive key file from local system
-  file "delete_local_keyfile" do
+  file 'delete_local_keyfile' do
     path local_key_file
     action :nothing
   end
@@ -117,16 +114,16 @@ else
   locality = ssl_config['locality']
   state = ssl_config['state']
   country = ssl_config['country']
-  execute "Create keystore" do
+  execute 'Create keystore' do
     command "/usr/bin/keytool -genkey -noprompt -keystore #{keystore_location}  -alias 'rundeck' -keyalg RSA -keypass #{ssl_password} -storepass #{ssl_password} -dname 'CN=#{host}, OU=#{org_unit}, O=#{org}, L=#{locality}, S=#{state}, C=#{country}'"
     notifies :restart, 'service[rundeckd]', :delayed
     sensitive true
-    not_if do ::File.exists?(keystore_location) end
+    not_if { ::File.exist?(keystore_location) }
   end
 
 end
 
-remote_file "Copy keystore to truststore" do
+remote_file 'Copy keystore to truststore' do
   path truststore_location
   source "file://#{keystore_location}"
 end
@@ -143,13 +140,13 @@ end
 
 template "#{ssl_config_location}/ssl.properties" do
   source 'ssl.properties.erb'
-  variables({
-              :keystore_location => keystore_location,
-              :truststore_location => truststore_location,
-              :pass => ssl_password
-  })
+  variables(
+    'keystore_location' => keystore_location,
+    'truststore_location' => truststore_location,
+    'pass' => ssl_password
+  )
   user rundeck
   owner rundeck
-  mode '0644'
+  mode 0o644
   sensitive true
 end

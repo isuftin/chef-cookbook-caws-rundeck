@@ -120,6 +120,6 @@ default['caws-rundeck']['jaas'] = [
 		"options" => {
 			"debug" => "true",
 			"file" =>  "/etc/rundeck/realm.properties"
-		}
+	  }
 	}
 ]
