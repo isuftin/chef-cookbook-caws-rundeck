@@ -4,35 +4,25 @@ driver:
   network:
     - ['forwarded_port', {guest: 4440, host: 4440, auto_correct: true}] # rundeck server port
     - ['forwarded_port', {guest: 4443, host: 4443, auto_correct: true}] # rundeck server port
-    - ['forwarded_port', {guest: 9980, host: 9980, auto_correct: true}] # chef-rundeck port
     - ['forwarded_port', {guest: 4440, host: 80, auto_correct: true}] # rundeck server port
     - ['forwarded_port', {guest: 4443, host: 443, auto_correct: true}] # rundeck server port
-    - ['forwarded_port', {guest: 9980, host: 9980, auto_correct: true}] # chef-rundeck port
 
 provisioner:
   name: chef_zero
 
 platforms:
-  - name: centos-6.7-vbox
-    driver:
-      box: bento/centos-6.7
-      box_url: bento/centos-6.7
-      provider: virtualbox
-  - name: centos-6.7-vmware
-    driver:
-      box: bento/centos-6.7
-      box_url: bento/centos-6.7
-      provider: vmware_fusion
+  - name: centos-6.8
 
 suites:
   - name: default
     run_list:
-      - recipe[stig::default]
-      - recipe[iptables::default]
+      - recipe[java]
+      - recipe[iptables]
+      - recipe[yum-epel]
+      - recipe[caws-rundeck::libraries_install]
       - recipe[caws-rundeck::default]
-      - recipe[caws-rundeck::tune_rundeck]
-      - recipe[caws-rundeck::python_install]
       - recipe[caws-rundeck::iptables]
+      - recipe[caws-rundeck::tune_rundeck]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -86,8 +76,8 @@ suites:
           }
         },
         "packages" : {
-          "rundeck" : "2.6.7-1.19.GA",
-          "rundeck-config" : "2.6.7-1.19.GA"
+          "rundeck" : "2.6.11-1.23.GA",
+          "rundeck-config" : "2.6.11-1.23.GA"
         },
         "rundeck-config.properties": {
           "rundeck.projectsStorageType": "filesystem",
@@ -109,19 +99,20 @@ suites:
          "framework.server.username" : "admin",
          "framework.server.name" : "caws-rundeck",
          "framework.server.hostname" : "127.0.0.1",
-         "framework.server.url" : "http://default-centos-67-vbox:4440"
+         "framework.server.url" : "http://default-centos-67:4440"
         }
       }
     }
 
   - name: default-mysql
     run_list:
-      - recipe[stig::default]
+      - recipe[java]
+      - recipe[iptables]
+      - recipe[yum-epel]
+      - recipe[caws-rundeck::libraries_install]
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::tune_rundeck]
-      - recipe[caws-rundeck::python_install]
-      - recipe[caws-rundeck::iptables]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -175,8 +166,8 @@ suites:
           }
         },
         "packages" : {
-          "rundeck" : "2.6.7-1.19.GA",
-          "rundeck-config" : "2.6.7-1.19.GA"
+          "rundeck" : "2.7.3-1.27.GA",
+          "rundeck-config" : "2.7.3-1.27.GA"
         },
         "rundeck-config.properties": {
           # docker run -p "3306:3306" -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=rundeck -e MYSQL_USER=rundeck -e MYSQL_PASSWORD=mysqlpass mysql:latest
@@ -212,8 +203,6 @@ suites:
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_jaas]
-      - recipe[caws-rundeck::python_install]
-      - recipe[caws-rundeck::iptables]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -258,22 +247,22 @@ suites:
           },
           {
             "module" : "com.dtolabs.rundeck.jetty.jaas.JettyCachingLdapLoginModule",
-            "name" : "testad",
+            "name" : "cawsad",
             "flag":    "sufficient",
             "options" : {
               "debug" : "true",
               "contextFactory" : "com.sun.jndi.ldap.LdapCtxFactory",
-              "providerUrl" : "ldap://1.0.1.0",
-              "bindDn" : "CN=LDAP Client User,OU=Test Accounts,OU=Rundeck,DC=test",
+              "providerUrl" : "ldap://172.16.9.243",
+              "bindDn" : "CN=LDAP Client User,OU=Service Accounts,OU=Rundeck,DC=aws,DC=us-west-2,DC=simple-ad-service,DC=internal",
               "bindPassword" : "",
               "authenticationMethod" : "simple",
               "forceBindingLogin":"true",
-              "userBaseDn":"DC=test",
+              "userBaseDn":"DC=aws,DC=us-west-2,DC=simple-ad-service,DC=internal",
               "userRdnAttribute":"sAMAccountName",
               "userIdAttribute":"sAMAccountName",
               "userPasswordAttribute":"unicodePwd",
               "userObjectClass":"user",
-              "roleBaseDn":"DC=test",
+              "roleBaseDn":"DC=aws,DC=us-west-2,DC=simple-ad-service,DC=internal",
               "roleNameAttribute":"cn",
               "roleMemberAttribute":"member",
               "roleObjectClass":"group",
@@ -323,8 +312,6 @@ suites:
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_ssl]
-      - recipe[caws-rundeck::python_install]
-      - recipe[caws-rundeck::iptables]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -357,8 +344,8 @@ suites:
       "caws-rundeck" : {
         "host" : "127.0.0.1",
         "ssl_config" : {
-          "org_unit" : "test",
-          "org" : "test",
+          "org_unit" : "CAWS",
+          "org" : "CAWS",
           "locality" : "Reston",
           "state" : "VA",
           "country" : "US"
@@ -386,8 +373,6 @@ suites:
       - recipe[stig::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_ssl]
-      - recipe[caws-rundeck::python_install]
-      - recipe[caws-rundeck::iptables]
     data_path: './test/files/'
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'

@@ -1,7 +1,14 @@
 #### Changelog
 
-0.1.0
+1.0.0
 ------
+- [isuftin@usgs.gov] Added to Travis CI
+- [isuftin@usgs.gov] Changed python_install recipe to libraries_install
+- [isuftin@usgs.gov] Moved to libraries_install JQ installation to libraries_install
+- [isuftin@usgs.gov] Create rspec tests
+- [isuftin@usgs.gov] Create rakefile for testing/style
+- [isuftin@usgs.gov] No longer depending on yum-epel. Up to the end user how
+  yum-epel is activated. Only needed if the libraries_install recipe is run
 - [isuftin@usgs.gov] Move to latest version of the IPTables cookbook which incorporates using attributes instead of templates
 - [isuftin@usgs.gov] Included the yum-epel cookbook as a dependency. Added a recipe to allow installation of python, pip and virtualenv
 
