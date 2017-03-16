@@ -4,7 +4,7 @@
 # Description:: Writes JAAS template
 
 rd_node = node['caws-rundeck']
-skip if rd_node['jaas'].nil?
+return if rd_node['jaas'].nil?
 
 rd_db_config = rd_node['data_bag_config']
 databag_name = rd_db_config['bag_name']
@@ -26,9 +26,9 @@ elsif search(databag_name, "id:#{databag_passwords_item}").any?
   credentials = passwords[jaas_passwords_item]
 
   configs.each do |config|
-    skip unless config.key?('name')
+    next unless config.key?('name')
     name = config['name']
-    skip unless credentials.key?(name)
+    next unless credentials.key?(name)
     credentials[name].each do |k, v|
       config['options'][k] = v
     end

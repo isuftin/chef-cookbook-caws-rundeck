@@ -4,7 +4,7 @@ maintainer_email 'isuftin@usgs.gov'
 license 'all_rights'
 description 'Installs/Configures caws-rundeck'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version '1.0.0'
+version '1.0.1'
 
 depends 'rundeck-server'
 depends 'iptables', '>= 3.1.0'

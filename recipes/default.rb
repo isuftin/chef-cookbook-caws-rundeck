@@ -42,11 +42,10 @@ framework_server_password = ''
 users = nil
 
 # Check if the data bag for secrets exists in the first place
+databag_name = node['caws-rundeck']['data_bag_config']['bag_name']
 if Chef::Config[:solo]
   Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
-else
-  databag_name = node['caws-rundeck']['data_bag_config']['bag_name']
-  skip unless Chef::DataBag.list.key?(databag_name)
+elsif Chef::DataBag.list.key?(databag_name)
   databag_users_item = node['caws-rundeck']['data_bag_config']['users_bag_item']
   databag_passwords_item = node['caws-rundeck']['data_bag_config']['passwords_bag_item']
   framework_server_password_attribute = node['caws-rundeck']['data_bag_config']['framework_server_password_attribute']
