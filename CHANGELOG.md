@@ -1,5 +1,9 @@
 #### Changelog
 
+1.0.1
+------
+- [isuftin@usgs.gov] "skip is not a thing"
+
 1.0.0
 ------
 - [isuftin@usgs.gov] Added to Travis CI
