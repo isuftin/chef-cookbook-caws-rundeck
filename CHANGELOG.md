@@ -1,5 +1,9 @@
 #### Changelog
 
+1.0.3
+------
+- [isuftin@usgs.gov] Found better method of CLI installation
+
 1.0.2
 ------
 - [isuftin@usgs.gov] Added an attribute to allow placement of RD_TOKEN in the new rd
