@@ -51,6 +51,7 @@ elsif Chef::DataBag.list.key?(databag_name)
   framework_server_password_attribute = node['caws-rundeck']['data_bag_config']['framework_server_password_attribute']
   mysql_server_password_attribute = node['caws-rundeck']['data_bag_config']['mysql_server_password_attribute']
   rundeck_encryption_password_attribute = node['caws-rundeck']['data_bag_config']['encryption_password_attribute']
+  rd_token_attribute = node['caws-rundeck']['data_bag_config']['rd_token_attribute']
 
   # Check if the data bag item exists
   if search(databag_name, "id:#{databag_users_item}").any?
@@ -64,6 +65,7 @@ elsif Chef::DataBag.list.key?(databag_name)
     framework_server_password = passwords[framework_server_password_attribute]
     mysql_server_password = passwords[mysql_server_password_attribute]
     rundeck_encryption_password = passwords[rundeck_encryption_password_attribute]
+    rd_token = passwords[rd_token_attribute]
 
     if !framework_server_password.nil? && !framework_server_password.empty?
       node.override['rundeck_server']['rundeck-config.framework']['framework.server.password'] = framework_server_password
@@ -76,6 +78,10 @@ elsif Chef::DataBag.list.key?(databag_name)
     if !rundeck_encryption_password.nil? && !rundeck_encryption_password.empty?
       node.override['rundeck_server']['rundeck-config.properties']['rundeck.storage.converter.1.config.password'] = rundeck_encryption_password
       node.override['rundeck_server']['rundeck-config.properties']['rundeck.config.storage.converter.1.config.password'] = rundeck_encryption_password
+    end
+
+    if !rd_token.nil? && !rd_token.empty?
+      node.override['rundeck_server']['cli']['config']['RD_TOKEN'] = rd_token
     end
   end
 end
@@ -94,6 +100,10 @@ end
 unless rundeck_encryption_password.nil? || rundeck_encryption_password.empty?
   node.override['rundeck_server']['rundeck-config.properties']['rundeck.storage.converter.1.config.password'] = ''
   node.override['rundeck_server']['rundeck-config.properties']['rundeck.config.storage.converter.1.config.password'] = ''
+end
+
+unless rd_token.nil? || rd_token.empty?
+  node.override['rundeck_server']['cli']['config']['RD_TOKEN'] = ''
 end
 
 node.override['rundeck_server']['realm.properties'] = {} unless users.nil?
