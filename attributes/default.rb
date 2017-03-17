@@ -9,8 +9,6 @@ default['caws-rundeck']['port'] = ""
 default['caws-rundeck']['iptables']['rules']['http'] = '-A FWR -p tcp -m tcp --dport 4440 -j ACCEPT'
 default['caws-rundeck']['iptables']['rules']['https'] = '-A FWR -p tcp -m tcp --dport 4443 -j ACCEPT'
 
-
-
 # Tuning rundeck. See http://rundeck.org/docs/administration/tuning-rundeck.html
 default['caws-rundeck']['tuning']['open-file-limit'] = 65535
 
@@ -41,6 +39,7 @@ default['caws-rundeck']['data_bag_config']['framework_server_password_attribute'
 default['caws-rundeck']['data_bag_config']['mysql_server_password_attribute'] = 'mysql_server_password'
 default['caws-rundeck']['data_bag_config']['jaas_passwords_attribute'] = 'jaas_passwords'
 default['caws-rundeck']['data_bag_config']['encryption_password_attribute'] = 'encryption_password'
+default['caws-rundeck']['data_bag_config']['rd_token_attribute'] = 'rd_token'
 
 default['caws-rundeck']['data_bag_config']['ssl_bag_name'] = "rundeck-_default"
 default['caws-rundeck']['data_bag_config']['ssl_passwords_bag_item'] = "rundeck_passwords"

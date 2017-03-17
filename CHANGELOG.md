@@ -1,5 +1,10 @@
 #### Changelog
 
+1.0.2
+------
+- [isuftin@usgs.gov] Added an attribute to allow placement of RD_TOKEN in the new rd
+  cli configuration by setting a databag value
+
 1.0.1
 ------
 - [isuftin@usgs.gov] "skip is not a thing"
