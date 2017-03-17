@@ -14,6 +14,7 @@ elsif Chef::DataBag.list.key?(databag_name)
   rd_token_attribute = db_config['rd_token_attribute']
   databag_passwords_item = db_config['passwords_bag_item']
   if search(databag_name, "id:#{databag_passwords_item}").any?
+    passwords = data_bag_item(databag_name, databag_passwords_item)
     rd_token = passwords[rd_token_attribute]
     if !rd_token.nil? && !rd_token.empty?
       node.override['rundeck_server']['cli']['config']['RD_TOKEN'] = rd_token
