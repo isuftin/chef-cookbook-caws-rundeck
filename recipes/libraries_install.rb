@@ -7,7 +7,7 @@ basedir = node['rundeck_server']['basedir']
 jq_version = node['caws-rundeck']['installs']['jq']['version']
 
 package 'python' do
-  action %i(install upgrade)
+  action %i[install upgrade]
 end
 
 package 'python-pip'
