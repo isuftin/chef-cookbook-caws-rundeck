@@ -120,7 +120,6 @@ else
     sensitive true
     not_if { ::File.exist?(keystore_location) }
   end
-
 end
 
 remote_file 'Copy keystore to truststore' do

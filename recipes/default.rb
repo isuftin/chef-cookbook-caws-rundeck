@@ -77,10 +77,6 @@ elsif Chef::DataBag.list.key?(databag_name)
       node.override['rundeck_server']['rundeck-config.properties']['rundeck.storage.converter.1.config.password'] = rundeck_encryption_password
       node.override['rundeck_server']['rundeck-config.properties']['rundeck.config.storage.converter.1.config.password'] = rundeck_encryption_password
     end
-
-    if !rd_token.nil? && !rd_token.empty?
-      node.override['rundeck_server']['cli']['config']['RD_TOKEN'] = rd_token
-    end
   end
 end
 

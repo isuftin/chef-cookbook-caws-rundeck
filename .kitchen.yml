@@ -4,8 +4,10 @@ driver:
   network:
     - ['forwarded_port', {guest: 4440, host: 4440, auto_correct: true}] # rundeck server port
     - ['forwarded_port', {guest: 4443, host: 4443, auto_correct: true}] # rundeck server port
+    - ['forwarded_port', {guest: 9980, host: 9980, auto_correct: true}] # chef-rundeck port
     - ['forwarded_port', {guest: 4440, host: 80, auto_correct: true}] # rundeck server port
     - ['forwarded_port', {guest: 4443, host: 443, auto_correct: true}] # rundeck server port
+    - ['forwarded_port', {guest: 9980, host: 9980, auto_correct: true}] # chef-rundeck port
 
 provisioner:
   name: chef_zero
@@ -16,13 +18,13 @@ platforms:
 suites:
   - name: default
     run_list:
+      - recipe[yum-epel]
       - recipe[java]
       - recipe[iptables]
-      - recipe[yum-epel]
-      - recipe[caws-rundeck::libraries_install]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::iptables]
       - recipe[caws-rundeck::tune_rundeck]
+      - recipe[caws-rundeck::libraries_install]
     data_bags_path: './test/integration/default/data_bags/'
     encrypted_data_bag_secret_key_path: './test/integration/default/encrypted_data_bag_secret'
     attributes: {
@@ -76,8 +78,8 @@ suites:
           }
         },
         "packages" : {
-          "rundeck" : "2.6.11-1.23.GA",
-          "rundeck-config" : "2.6.11-1.23.GA"
+          "rundeck" : "2.7.3-1.27.GA",
+          "rundeck-config" : "2.7.3-1.27.GA"
         },
         "rundeck-config.properties": {
           "rundeck.projectsStorageType": "filesystem",
@@ -106,8 +108,6 @@ suites:
 
   - name: default-mysql
     run_list:
-      - recipe[java]
-      - recipe[iptables]
       - recipe[yum-epel]
       - recipe[caws-rundeck::libraries_install]
       - recipe[iptables::default]
@@ -199,7 +199,6 @@ suites:
 
   - name: server-ldap
     run_list:
-      - recipe[stig::default]
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_jaas]
@@ -308,7 +307,6 @@ suites:
 
   - name: ssl-server-create-cert
     run_list:
-      - recipe[stig::default]
       - recipe[iptables::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_ssl]
@@ -370,7 +368,6 @@ suites:
   - name: ssl-server-provide-cert
     run_list:
       - recipe[iptables::default]
-      - recipe[stig::default]
       - recipe[caws-rundeck::default]
       - recipe[caws-rundeck::setup_ssl]
     data_path: './test/files/'
