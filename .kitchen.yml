@@ -14,7 +14,10 @@ provisioner:
 
 platforms:
   - name: centos-6.8
-
+  - name: centos-7.3
+    driver:
+      customize:
+        memory: 6144
 suites:
   - name: default
     run_list:
