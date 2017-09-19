@@ -7,6 +7,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '1.0.4'
 chef_version '~> 12'
 supports 'centos', '~> 6.8'
+supports 'centos', '~> 7.3'
 depends 'rundeck-server'
 depends 'iptables'
 source_url		 'https://github.com/USGS-CIDA/chef-cookbook-caws-rundeck'

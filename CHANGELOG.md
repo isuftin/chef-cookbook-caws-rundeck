@@ -1,13 +1,18 @@
 #### Changelog
 
+1.0.4
+------
+- [isuftin@usgs.gov] Overriding the default installation for the upstream
+rundeck-server cookbook since it is currently broken for HTTPS installs
+with self-signed certificates
+
 1.0.3
 ------
 - [isuftin@usgs.gov] Found better method of CLI installation
 
 1.0.2
 ------
-- [isuftin@usgs.gov] Added an attribute to allow placement of RD_TOKEN in the new rd
-  cli configuration by setting a databag value
+- [isuftin@usgs.gov] Added an attribute to allow placement of RD_TOKEN in the new rd cli configuration by setting a databag value
 
 1.0.1
 ------
