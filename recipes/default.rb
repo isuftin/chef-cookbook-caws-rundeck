@@ -80,21 +80,13 @@ elsif Chef::DataBag.list.key?(databag_name)
   end
 end
 
-
 include_recipe 'rundeck-server::install'
 include_recipe 'rundeck-server::config'
 
 # Define service
 service 'rundeckd' do
   supports status: true, restart: true
-  action [:enable, :start]
-end
-
-
-execute 'ensure api is up' do
-  command "curl -s -k -f #{node['rundeck_server']['rundeck-config.framework']['framework.server.url']}"
-  retries 10
-  retry_delay 30
+  action %i[enable start]
 end
 
 # Install rundeck gem for API communication

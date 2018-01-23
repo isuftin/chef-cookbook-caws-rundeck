@@ -59,7 +59,7 @@ if !remote_cert_file.nil? && !remote_cert_file.empty?
     notifies :run, 'execute[convert_cert]', :immediately
     notifies :run, 'execute[import_cert]', :immediately
     notifies :delete, 'file[delete_local_keyfile]', :immediately
-    notifies :restart, 'service[rundeckd]', :delayed
+    notifies :restart, 'service[rundeckd]', :immediately
     sensitive true
   end
 
@@ -116,7 +116,7 @@ else
   country = ssl_config['country']
   execute 'Create keystore' do
     command "/usr/bin/keytool -genkey -noprompt -keystore #{keystore_location}  -alias 'rundeck' -keyalg RSA -keypass #{ssl_password} -storepass #{ssl_password} -dname 'CN=#{host}, OU=#{org_unit}, O=#{org}, L=#{locality}, S=#{state}, C=#{country}'"
-    notifies :restart, 'service[rundeckd]', :delayed
+    notifies :restart, 'service[rundeckd]', :immediately
     sensitive true
     not_if { ::File.exist?(keystore_location) }
   end
@@ -148,4 +148,5 @@ template "#{ssl_config_location}/ssl.properties" do
   owner rundeck
   mode 0o644
   sensitive true
+  notifies :restart, 'service[rundeckd]', :immediately
 end

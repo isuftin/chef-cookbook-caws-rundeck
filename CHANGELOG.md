@@ -1,5 +1,12 @@
 #### Changelog
 
+1.0.5
+------
+- [isuftin@usgs.gov] Split out the functionality to check for a running Rundeck
+server. The reason being that the check takes place previous to SSL being configured
+properly and Rundeck having a chance to restart. This change allows us to run the
+SSL config recipe before the ensure running recipe
+
 1.0.4
 ------
 - [isuftin@usgs.gov] Overriding the default installation for the upstream

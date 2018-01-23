@@ -13,8 +13,11 @@ provisioner:
   name: chef_zero
 
 platforms:
-  - name: centos-6.8
-  - name: centos-7.3
+  - name: centos-6.9
+    driver:
+      customize:
+        memory: 6144
+  - name: centos-7.4
     driver:
       customize:
         memory: 6144
