@@ -4,5 +4,6 @@ metadata
 
 cookbook 'stig'
 cookbook 'yum-epel'
-cookbook 'rundeck-server'
+cookbook 'iptables'
+cookbook 'apt'
 cookbook 'doi_ssl_filtering', git: 'https://github.com/USGS-CIDA/chef-cookbook-doi-ssl-filtering'
